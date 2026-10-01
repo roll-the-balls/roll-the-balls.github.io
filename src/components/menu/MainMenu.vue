@@ -49,6 +49,13 @@ const commit = __COMMIT__
       {{ t('menu.rules') }} <span class="soon">{{ t('menu.soon') }}</span>
     </button>
 
+    <!-- Гость в узком ландшафте: правая панель схлопнута в меню (D-16) —
+         видна только в диапазоне 700–1023px (класс narrow-only). -->
+    <p class="guest-line narrow-only">
+      <span class="avatar-xs" aria-hidden="true">{{ t('player.guest').slice(0, 1) }}</span>
+      {{ t('player.guest') }}
+    </p>
+
     <!-- Слот штампа версии: по умолчанию локализованная подпись v{версия} · {дата}. -->
     <slot name="stamp">
       <span class="version-stamp">

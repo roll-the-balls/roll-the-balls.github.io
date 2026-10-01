@@ -134,6 +134,41 @@ body {
   cursor: not-allowed;
 }
 
+/* Строка гостя для узкого ландшафта: видна только в 700–1023px,
+   когда правая панель схлопнута в меню (D-16, backstop E4). */
+.narrow-only {
+  display: none;
+}
+
+.guest-line {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--text-label);
+  color: var(--text-dim);
+}
+
+.avatar-xs {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-label);
+  font-weight: var(--weight-semibold);
+}
+
+@media (min-width: 700px) and (max-width: 1023px) {
+  .narrow-only {
+    display: flex;
+  }
+}
+
 /* Бейдж «Скоро»/Soon: акцентный контурный маркер для неготовых пунктов (D-10). */
 .soon {
   font-size: var(--text-label);
