@@ -45,8 +45,9 @@ describe('ui store (view-state)', () => {
     ui.go('mode')
     // Неготовые пункты (правила/ИИ/сеть) — disabled + бейдж «Скоро» (D-10):
     // у них нет собственного навигационного действия, единственная мутация — go().
+    const record = ui as unknown as Record<string, unknown>
     const publicActions = Object.keys(ui).filter(
-      (k) => !k.startsWith('$') && !k.startsWith('_') && typeof ui[k] === 'function',
+      (k) => !k.startsWith('$') && !k.startsWith('_') && typeof record[k] === 'function',
     )
     expect(publicActions).toEqual(['go'])
     // Пока go() не вызван, view остаётся прежним — мёртвых кликов с сайд-эффектом нет.

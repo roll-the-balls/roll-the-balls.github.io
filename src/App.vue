@@ -1,26 +1,27 @@
 <script setup lang="ts">
 // Tracer-каркас shell: grid + view-state + инфо-бар + бокс стола (D-13, D-16).
-// Все пользовательские строки — только из словарей; имя — текстовой
-// интерполяцией, никогда v-html (T-02-01).
+// Экраны меню вынесены в компоненты (план 01-03); переключение — только
+// через ui-стор, без роутера (D-09). Все пользовательские строки — из
+// словарей; имя — текстовая интерполяция, никогда v-html (T-03-01).
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import MainMenu from './components/menu/MainMenu.vue'
+import ModeSelect from './components/menu/ModeSelect.vue'
+import OpponentSelect from './components/menu/OpponentSelect.vue'
+import RulesStub from './components/menu/RulesStub.vue'
+import SettingsScreen from './components/menu/SettingsScreen.vue'
+import StorageBanner from './components/overlays/StorageBanner.vue'
 import { useIdentityStore } from './stores/identity'
-import { storageUnavailable } from './stores/persist'
-import { useSettingsStore } from './stores/settings'
 import { useUiStore } from './stores/ui'
 
 const { t } = useI18n()
 const ui = useUiStore()
-const settings = useSettingsStore()
 const identity = useIdentityStore()
 
 // Пустое имя → «Без имени» + подсказка про ID (D-11, UI-SPEC empty E2).
 const displayName = computed(() =>
   identity.name.trim() === '' ? t('player.noName') : identity.name,
 )
-
-// Штамп версии справа внизу меню: детектор корректного base (D-16, D-02).
-const versionStamp = `v${__APP_VERSION__} · ${__BUILD_DATE__}`
 
 // Кнопка полноэкранного режима на инфо-панели (D-15).
 // Полный путь lock('landscape') + overlay-детект — в плане 01-04 (Pattern 5).
@@ -69,131 +70,16 @@ async function toggleFullscreen(): Promise<void> {
       <span class="player-tag">{{ $t('player.you') }}</span>
     </aside>
 
-    <!-- Центр: меню-экраны (view-state) или бокс стола. -->
+    <!-- Центр: экраны меню (view-state, D-09) над боксом стола. -->
     <main class="center">
-      <!-- Инлайн-баннер недоступности localStorage (D-08, UI-SPEC error E6). -->
-      <p v-if="storageUnavailable" class="storage-banner">{{ $t('storage.unavailable') }}</p>
+      <!-- Инлайн-баннер недоступности localStorage: только при флаге (D-08). -->
+      <StorageBanner />
 
-      <nav v-if="ui.view === 'main'" class="menu" :aria-label="$t('app.title')">
-        <h1 class="app-title">{{ $t('app.title') }}</h1>
-        <button class="cta" type="button" @click="ui.go('mode')">{{ $t('menu.play') }}</button>
-        <button class="menu-btn" type="button" @click="ui.go('mode')">{{ $t('menu.mode') }}</button>
-        <button class="menu-btn" type="button" @click="ui.go('opponent')">
-          {{ $t('menu.opponent') }}
-        </button>
-        <button class="menu-btn" type="button" @click="ui.go('settings')">
-          {{ $t('menu.settings') }}
-        </button>
-        <button class="menu-btn" type="button" @click="ui.go('rules', 'main')">
-          {{ $t('menu.rules') }}
-        </button>
-        <span class="version-stamp">{{ versionStamp }}</span>
-      </nav>
-
-      <section v-else-if="ui.view === 'mode'" class="menu">
-        <h2 class="heading">{{ $t('mode.title') }}</h2>
-        <button class="menu-btn is-disabled" type="button" disabled>
-          {{ $t('mode.arcade') }} <span class="soon">{{ $t('menu.soon') }}</span>
-        </button>
-        <button class="menu-btn is-disabled" type="button" disabled>
-          {{ $t('mode.eight') }} <span class="soon">{{ $t('menu.soon') }}</span>
-        </button>
-        <button class="menu-btn" type="button" @click="ui.go('main')">
-          {{ $t('menu.back') }}
-        </button>
-      </section>
-
-      <section v-else-if="ui.view === 'opponent'" class="menu">
-        <h2 class="heading">{{ $t('opponent.title') }}</h2>
-        <button class="menu-btn is-disabled" type="button" disabled>
-          {{ $t('opponent.ai') }} <span class="soon">{{ $t('menu.soon') }}</span>
-        </button>
-        <button class="menu-btn is-disabled" type="button" disabled>
-          {{ $t('opponent.local') }} <span class="soon">{{ $t('menu.soon') }}</span>
-        </button>
-        <button class="menu-btn is-disabled" type="button" disabled>
-          {{ $t('opponent.remote') }} <span class="soon">{{ $t('menu.soon') }}</span>
-        </button>
-        <button class="menu-btn" type="button" @click="ui.go('main')">
-          {{ $t('menu.back') }}
-        </button>
-      </section>
-
-      <section v-else-if="ui.view === 'settings'" class="menu">
-        <h2 class="heading">{{ $t('settings.title') }}</h2>
-        <label class="settings-row">
-          <span class="label">{{ $t('player.nameLabel') }}</span>
-          <input
-            v-model="identity.name"
-            class="text-input"
-            type="text"
-            maxlength="24"
-            :placeholder="$t('player.noName')"
-          />
-        </label>
-        <p class="hint">{{ $t('player.nameHint') }} {{ identity.shortId }}</p>
-        <label class="settings-row">
-          <span class="label">{{ $t('settings.music') }}</span>
-          <input v-model="settings.music" class="check" type="checkbox" />
-        </label>
-        <label class="settings-row">
-          <span class="label">{{ $t('settings.sounds') }}</span>
-          <input v-model="settings.sounds" class="check" type="checkbox" />
-        </label>
-        <div class="settings-row">
-          <span class="label">{{ $t('settings.language') }}</span>
-          <div class="segment" role="group" :aria-label="$t('settings.language')">
-            <button
-              class="segment-btn"
-              type="button"
-              :class="{ 'is-active': settings.locale === 'ru' }"
-              @click="settings.locale = 'ru'"
-            >
-              RU
-            </button>
-            <button
-              class="segment-btn"
-              type="button"
-              :class="{ 'is-active': settings.locale === 'en' }"
-              @click="settings.locale = 'en'"
-            >
-              EN
-            </button>
-          </div>
-        </div>
-        <div class="settings-row">
-          <span class="label">{{ $t('settings.theme') }}</span>
-          <div class="segment" role="group" :aria-label="$t('settings.theme')">
-            <button
-              class="segment-btn"
-              type="button"
-              :class="{ 'is-active': settings.theme === 'dark' }"
-              @click="settings.theme = 'dark'"
-            >
-              {{ $t('settings.themeDark') }}
-            </button>
-            <button
-              class="segment-btn"
-              type="button"
-              :class="{ 'is-active': settings.theme === 'felt' }"
-              @click="settings.theme = 'felt'"
-            >
-              {{ $t('settings.themeFelt') }}
-            </button>
-          </div>
-        </div>
-        <button class="menu-btn" type="button" @click="ui.go('main')">
-          {{ $t('menu.back') }}
-        </button>
-      </section>
-
-      <section v-else class="menu">
-        <h2 class="heading">{{ $t('rules.title') }}</h2>
-        <p class="body-text">{{ $t('rules.stub') }}</p>
-        <button class="menu-btn" type="button" @click="ui.go('main')">
-          {{ $t('menu.back') }}
-        </button>
-      </section>
+      <MainMenu v-if="ui.view === 'main'" />
+      <ModeSelect v-else-if="ui.view === 'mode'" />
+      <OpponentSelect v-else-if="ui.view === 'opponent'" />
+      <SettingsScreen v-else-if="ui.view === 'settings'" />
+      <RulesStub v-else />
 
       <!-- Бокс стола: aspect 2/1, центрирован, UI не перекрывает (D-13, TABLE-03). -->
       <div class="table-wrap">
@@ -227,10 +113,11 @@ async function toggleFullscreen(): Promise<void> {
 </template>
 
 <style scoped>
-/* Палитра и 4 текстовых размера строго из UI-SPEC (scoped CSS + CSS-переменные). */
+/* Палитра и 4 текстовых размера строго из UI-SPEC (scoped CSS + CSS-переменные).
+   Общие примитивы меню (.menu/.cta/.menu-btn/...) — в assets/main.css:
+   scoped-стили внутрь дочерних компонентов не проникают. */
 .shell {
   --bg: #0e1113;
-  --panel: #1b2126;
   --accent: #e8b34b;
   --danger: #e5484d;
   --text: #f2f4f5;
@@ -340,151 +227,6 @@ async function toggleFullscreen(): Promise<void> {
   overflow: hidden;
 }
 
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 560px;
-  width: 100%;
-  margin: 0 auto;
-  /* Меню-колонка скроллится внутри; стол и бары не сжимаются. */
-  overflow-y: auto;
-  flex-shrink: 0;
-  max-height: 55%;
-}
-
-.app-title {
-  font-size: var(--text-display);
-  font-weight: 600;
-  line-height: 1.2;
-  margin: 0;
-}
-
-.heading {
-  font-size: var(--text-heading);
-  font-weight: 600;
-  line-height: 1.2;
-  margin: 0;
-}
-
-.body-text {
-  font-size: var(--text-body);
-  line-height: 1.5;
-  margin: 0;
-}
-
-.cta {
-  min-height: 44px;
-  background: var(--accent);
-  color: #0e1113;
-  border: none;
-  border-radius: 8px;
-  font-size: var(--text-body);
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.menu-btn {
-  min-height: 44px;
-  background: var(--panel);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  font-size: var(--text-body);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.menu-btn:focus-visible,
-.cta:focus-visible,
-.icon-btn:focus-visible,
-.segment-btn:focus-visible,
-.check:focus-visible,
-.text-input:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-
-.menu-btn.is-disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.soon {
-  font-size: var(--text-label);
-  color: var(--accent);
-  border: 1px solid var(--accent);
-  border-radius: 4px;
-  padding: 0 4px;
-}
-
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 44px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 8px 16px;
-}
-
-.label {
-  font-size: var(--text-label);
-}
-
-.hint {
-  font-size: var(--text-label);
-  color: var(--text-dim);
-  margin: 0;
-}
-
-.text-input {
-  min-height: 44px;
-  max-width: 200px;
-  background: var(--bg);
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0 8px;
-  font-size: var(--text-body);
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.check {
-  width: 24px;
-  height: 24px;
-  accent-color: var(--accent);
-}
-
-.segment {
-  display: flex;
-  gap: 4px;
-}
-
-.segment-btn {
-  min-height: 44px;
-  min-width: 44px;
-  padding: 0 16px;
-  background: var(--bg);
-  color: var(--text-dim);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.segment-btn.is-active {
-  color: #0e1113;
-  background: var(--accent);
-  border-color: var(--accent);
-  font-weight: 600;
-}
-
 .icon-btn {
   min-width: 44px;
   min-height: 44px;
@@ -498,14 +240,9 @@ async function toggleFullscreen(): Promise<void> {
   cursor: pointer;
 }
 
-.storage-banner {
-  background: var(--panel);
-  border: 1px solid var(--danger);
-  border-radius: 8px;
-  padding: 8px 16px;
-  font-size: var(--text-label);
-  margin: 0;
-  flex-shrink: 0;
+.icon-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* Бокс стола: соотношение 2/1, максимум места с letterbox, центр сегмента. */
@@ -550,12 +287,6 @@ async function toggleFullscreen(): Promise<void> {
 
 .action-bar .menu-btn {
   min-width: 200px;
-}
-
-.version-stamp {
-  align-self: flex-end;
-  font-size: var(--text-label);
-  color: var(--text-dim);
 }
 
 /* Портрет: полноэкранный overlay поверх всего, только альбомный режим. */
