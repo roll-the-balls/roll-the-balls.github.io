@@ -14,6 +14,7 @@ import RulesStub from './components/menu/RulesStub.vue'
 import SettingsScreen from './components/menu/SettingsScreen.vue'
 import ActionBar from './components/shell/ActionBar.vue'
 import MenuDialog from './components/dialogs/MenuDialog.vue'
+import { MENU_DIALOG_VIEWS } from './components/dialogs/menuDialogViews'
 import InfoBar from './components/shell/InfoBar.vue'
 import PlayerPanel from './components/shell/PlayerPanel.vue'
 import TableSlot from './components/shell/TableSlot.vue'
@@ -29,6 +30,10 @@ const identity = useIdentityStore()
 const displayName = computed(() =>
   identity.name.trim() === '' ? t('player.noName') : identity.name,
 )
+
+// Открытый диалог = меню/лобби поверх: игровой слой inert (немодальный
+// <dialog> не даёт inert сам, в отличие от showModal).
+const menuOpen = computed(() => MENU_DIALOG_VIEWS.has(ui.view))
 </script>
 
 <template>
@@ -45,18 +50,11 @@ const displayName = computed(() =>
     />
 
     <!-- Центр: игровой слой. Стол всегда отрендерен; меню живёт
-         в нативном <dialog> поверх (решение пользователя, UAT Фазы 1). -->
-    <main class="center">
+         в нативном <dialog> поверх всего экрана (UAT Фазы 1).
+         Пока диалог открыт, игровой слой inert (модальность). -->
+    <main class="center" :inert="menuOpen">
       <!-- Бокс стола: aspect 2/1, центрирован, виден за блюром диалога. -->
       <TableSlot />
-
-      <MenuDialog>
-        <MainMenu v-if="ui.view === 'main'" />
-        <ModeSelect v-else-if="ui.view === 'mode'" />
-        <OpponentSelect v-else-if="ui.view === 'opponent'" />
-        <SettingsScreen v-else-if="ui.view === 'settings'" />
-        <RulesStub v-else />
-      </MenuDialog>
     </main>
 
     <!-- Правая панель: гость; в узком ландшафте скрывается (D-16). -->
@@ -65,8 +63,16 @@ const displayName = computed(() =>
     <!-- Панель действий 64px: слоты-заглушки под Фазу 3. -->
     <ActionBar />
 
-    <!-- Портретный overlay игрового слоя: при открытом меню поверх него
-         встаёт экземпляр внутри MenuDialog (top-layer), этот — для игры. -->
+    <!-- Слой диалога: меню/лобби поверх всего экрана (немодальный <dialog>). -->
+    <MenuDialog>
+      <MainMenu v-if="ui.view === 'main'" />
+      <ModeSelect v-else-if="ui.view === 'mode'" />
+      <OpponentSelect v-else-if="ui.view === 'opponent'" />
+      <SettingsScreen v-else-if="ui.view === 'settings'" />
+      <RulesStub v-else />
+    </MenuDialog>
+
+    <!-- Портретный overlay: fixed z-50 поверх диалога (диалог не в top-layer). -->
     <RotateOverlay />
   </div>
 </template>
