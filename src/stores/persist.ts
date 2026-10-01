@@ -35,6 +35,18 @@ export function persistDebounced(key: string, save: () => string, ms = 250) {
   }
 }
 
+// Синхронно удаляет перечисленные ключи («Сбросить все данные», D-12).
+// Ошибка удаления (private mode) не роняет сброс, но выставляет флаг баннера.
+export function wipeStored(...keys: string[]): void {
+  for (const key of keys) {
+    try {
+      localStorage.removeItem(key)
+    } catch {
+      storageUnavailable.value = true
+    }
+  }
+}
+
 // Безопасное чтение сырого значения для hydrate при старте:
 // битое/подменённое через консоль хранилище не должно ронять boot (T-02-02).
 export function loadStored(key: string): string | null {

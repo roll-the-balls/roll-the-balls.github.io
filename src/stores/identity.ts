@@ -1,6 +1,7 @@
 // Стор идентичности: имя + UUID игрока (D-07).
 import { defineStore } from 'pinia'
-import { loadStored } from './persist'
+import { loadStored, wipeStored } from './persist'
+import { SETTINGS_KEY } from './settings'
 
 // One-way ключ персистенции: зафиксирован гейтом 01-02 (locked-keys, D-05).
 export const IDENTITY_KEY = 'bt.identity.v1'
@@ -54,6 +55,15 @@ export const useIdentityStore = defineStore('identity', {
         }
       }
       this.ensureId()
+    },
+    // «Сбросить все данные» (D-12): единственный путь удаления ID.
+    // Очищает оба ключа bt.*.v1 синхронно и сразу выдаёт новый UUID,
+    // чтобы приложение продолжало работать без перезагрузки.
+    // Сброс настроек до дефолтов делает вызывающий код через settings.$reset().
+    wipeAll(): void {
+      wipeStored(SETTINGS_KEY, IDENTITY_KEY)
+      this.name = ''
+      this.id = generateUuid()
     },
   },
 })
