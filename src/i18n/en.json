@@ -1,0 +1,65 @@
+{
+  "app": {
+    "title": "Billiards Together"
+  },
+  "menu": {
+    "play": "Play",
+    "mode": "Mode",
+    "opponent": "Opponent",
+    "settings": "Settings",
+    "rules": "Rules",
+    "soon": "Soon",
+    "back": "Back"
+  },
+  "player": {
+    "you": "You",
+    "guest": "Guest",
+    "noName": "No name",
+    "nameLabel": "Player name",
+    "nameHint": "Enter a name or leave it blank — a short ID is shown next to it."
+  },
+  "settings": {
+    "title": "Settings",
+    "music": "Music",
+    "sounds": "Sounds",
+    "language": "Language",
+    "theme": "Theme",
+    "themeDark": "Dark",
+    "themeFelt": "Felt"
+  },
+  "mode": {
+    "title": "Select mode",
+    "arcade": "Arcade",
+    "eight": "Eight-ball"
+  },
+  "opponent": {
+    "title": "Select opponent",
+    "ai": "Computer",
+    "local": "Second player",
+    "remote": "Network"
+  },
+  "rules": {
+    "title": "Rules",
+    "stub": "Mode rules arrive in later phases."
+  },
+  "info": {
+    "menu": "Main menu",
+    "statusReady": "Ready"
+  },
+  "actions": {
+    "hit": "Shoot"
+  },
+  "table": {
+    "title": "Table 2:1 — future render slot"
+  },
+  "storage": {
+    "unavailable": "Settings cannot be saved in this browser. Changes will be lost on reload."
+  },
+  "rotate": {
+    "title": "Rotate your device",
+    "body": "The game works in landscape only"
+  },
+  "error": {
+    "loadError": "Failed to load resources. Check your connection and reload the page."
+  }
+}
