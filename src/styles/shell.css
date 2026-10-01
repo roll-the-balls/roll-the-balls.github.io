@@ -1,8 +1,10 @@
 /* Запрет выделения текста везде, кроме мест где оно реально нужно
    (решение пользователя): имя и ID игрока (класс .allow-select),
    поля ввода — всегда (input/textarea/contenteditable). */
+html,
 body {
   -webkit-user-select: none;
+  -moz-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
 }
