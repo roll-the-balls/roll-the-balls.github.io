@@ -29,8 +29,8 @@ const initial = computed(() => {
   <aside class="panel" :class="side === 'right' ? 'panel-right' : 'panel-left'">
     <div class="avatar" aria-hidden="true">{{ initial }}</div>
     <div class="player-meta">
-      <span class="player-name">{{ name }}</span>
-      <span v-if="sub !== ''" class="player-id">{{ sub }}</span>
+      <span class="player-name allow-select">{{ name }}</span>
+      <span v-if="sub !== ''" class="player-id allow-select">{{ sub }}</span>
     </div>
     <span v-if="tag !== ''" class="player-tag">{{ tag }}</span>
   </aside>

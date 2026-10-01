@@ -48,7 +48,7 @@ function setTheme(next: 'dark' | 'felt'): void {
           :placeholder="t('player.noName')"
           :aria-label="t('player.nameLabel')"
         />
-        <span class="short-id">{{ identity.shortId }}</span>
+        <span class="short-id allow-select">{{ identity.shortId }}</span>
       </span>
     </label>
     <!-- Пустое имя → «Без имени» + подсказка про ID (D-11, empty E2). -->

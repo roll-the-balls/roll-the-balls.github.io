@@ -13,6 +13,7 @@ import OpponentSelect from './components/menu/OpponentSelect.vue'
 import RulesStub from './components/menu/RulesStub.vue'
 import SettingsScreen from './components/menu/SettingsScreen.vue'
 import ActionBar from './components/shell/ActionBar.vue'
+import MenuDialog from './components/dialogs/MenuDialog.vue'
 import InfoBar from './components/shell/InfoBar.vue'
 import PlayerPanel from './components/shell/PlayerPanel.vue'
 import TableSlot from './components/shell/TableSlot.vue'
@@ -44,19 +45,22 @@ const displayName = computed(() =>
       :tag="t('player.you')"
     />
 
-    <!-- Центр: экраны меню (view-state, D-09) над боксом стола. -->
+    <!-- Центр: стол всегда за диалогом; меню (и будущие лобби) живут
+         в модальном диалоге поверх стола (решение пользователя, UAT Фазы 1). -->
     <main class="center">
       <!-- Инлайн-баннер недоступности localStorage: только при флаге (D-08). -->
       <StorageBanner />
 
-      <MainMenu v-if="ui.view === 'main'" />
-      <ModeSelect v-else-if="ui.view === 'mode'" />
-      <OpponentSelect v-else-if="ui.view === 'opponent'" />
-      <SettingsScreen v-else-if="ui.view === 'settings'" />
-      <RulesStub v-else />
-
-      <!-- Бокс стола: aspect 2/1, центрирован, UI не перекрывает (TABLE-03). -->
+      <!-- Бокс стола: aspect 2/1, центрирован, виден за блюром диалога. -->
       <TableSlot />
+
+      <MenuDialog>
+        <MainMenu v-if="ui.view === 'main'" />
+        <ModeSelect v-else-if="ui.view === 'mode'" />
+        <OpponentSelect v-else-if="ui.view === 'opponent'" />
+        <SettingsScreen v-else-if="ui.view === 'settings'" />
+        <RulesStub v-else />
+      </MenuDialog>
     </main>
 
     <!-- Правая панель: гость; в узком ландшафте скрывается (D-16). -->

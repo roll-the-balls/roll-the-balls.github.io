@@ -1,3 +1,26 @@
+/* Запрет выделения текста везде, кроме мест где оно реально нужно
+   (решение пользователя): имя и ID игрока (класс .allow-select),
+   поля ввода — всегда (input/textarea/contenteditable). */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input,
+textarea,
+[contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+/* Явное разрешение выделения: имя/ID игрока и подобные места. */
+.allow-select {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 /* Shell-раскладка (D-13, D-16, Layout Contract UI-SPEC).
    Широкий экран (≥1024px): 3 колонки 240px | 1fr | 240px,
    ряды auto | 1fr | 64px (инфо-бар / центр / панель действий).
@@ -18,10 +41,12 @@
   font-size: var(--text-body);
 }
 
-/* Центр: инфо-контент экранов меню сверху, бокс стола занимает остаток.
-   Стол и бары не сжимаются; меню скроллится внутри (overflow-probe E1/E3). */
+/* Центр: бокс стола занимает всё место; меню живёт в модальном диалоге
+   поверх стола (MenuDialog, решение пользователя из UAT Фазы 1).
+   position: relative — якорь для absolute-backdrop диалога. */
 .center {
   grid-area: center;
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
