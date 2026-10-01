@@ -40,8 +40,15 @@ function isTheme(v: unknown): v is 'dark' | 'felt' {
   return v === 'dark' || v === 'felt'
 }
 
+// Глубокая копия дефолтов: surface-spread оставил бы вложенный trajectory
+// общим объектом, и мутация пережила бы $reset() — «Сбросить все данные» был
+// бы неполным (S-02). structuredClone доступен во всех целевых браузерах.
+function freshDefaults(): SettingsState {
+  return structuredClone(DEFAULT_SETTINGS)
+}
+
 export const useSettingsStore = defineStore('settings', {
-  state: (): SettingsState => ({ ...DEFAULT_SETTINGS }),
+  state: (): SettingsState => freshDefaults(),
   actions: {
     // Гидратация ДО mount (вызывается из main.ts): битый JSON = дефолты,
     // старые сейвы подхватывают новые поля через merge дефолтов.

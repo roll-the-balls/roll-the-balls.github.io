@@ -28,6 +28,10 @@ function generateUuid(): string {
   return `${r()}${r()}-${r()}-4${r().slice(1)}-${r()}-${r()}${r()}${r()}`
 }
 
+// Формат выданного ID: 8-4-4-4-12 hex. Подменённое в localStorage значение
+// не проходит проверку — игрок получает чистый UUID (S-01).
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 export const useIdentityStore = defineStore('identity', {
   state: () => ({ name: '', id: '' }),
   getters: {
@@ -47,8 +51,10 @@ export const useIdentityStore = defineStore('identity', {
           const parsed: unknown = JSON.parse(raw)
           if (typeof parsed === 'object' && parsed !== null) {
             const p = parsed as Partial<Record<string, unknown>>
-            if (typeof p['name'] === 'string') this.name = p['name']
-            if (typeof p['id'] === 'string' && p['id'] !== '') this.id = p['id']
+            // Клампы на пути hydrate: maxlength=24 защищает только ввод с
+            // клавиатуры, подмена в localStorage шла мимо него (S-01).
+            if (typeof p['name'] === 'string') this.name = p['name'].slice(0, 24)
+            if (typeof p['id'] === 'string' && UUID_RE.test(p['id'])) this.id = p['id']
           }
         } catch {
           // Битые данные = дефолты + новый ID (T-02-02).

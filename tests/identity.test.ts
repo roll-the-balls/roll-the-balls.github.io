@@ -67,6 +67,23 @@ describe('identity store (bt.identity.v1)', () => {
     expect(store.name).toBe('')
   })
 
+  test('подменённые в хранилище имя/ID проходят клампы (S-01)', () => {
+    localStorage.setItem(
+      IDENTITY_KEY,
+      JSON.stringify({
+        name: 'и'.repeat(100), // длиннее maxlength=24
+        id: 'not-a-uuid', // не формат UUID
+      }),
+    )
+    const store = useIdentityStore()
+    store.hydrate()
+
+    expect(store.name).toHaveLength(24)
+    // Подменённый ID отвергнут — игрок получил чистый UUID.
+    expect(store.id).toMatch(UUID_RE)
+    expect(store.id).not.toBe('not-a-uuid')
+  })
+
   test('wipe-all очищает оба ключа, следующий boot генерирует новый ID (D-12)', async () => {
     // Наполняем оба хранилища, как после игровой сессии.
     const settings = useSettingsStore()

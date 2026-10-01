@@ -129,4 +129,23 @@ describe('settings persistence (bt.settings.v1)', () => {
     expect(storageUnavailable.value).toBe(true)
     expect(JSON.parse(JSON.stringify(store.$state))).toEqual(DEFAULTS_SNAPSHOT)
   })
+
+  test('мутация forward-поля не портит DEFAULT_SETTINGS: $reset() возвращает чистые дефолты (S-02)', () => {
+    const first = useSettingsStore()
+    first.trajectory.width = 99
+    first.clothColor = '#FFFFFF'
+
+    // Новый стор из нового Pinia получает дефолты из того же объекта — если бы
+    // он был общим, подменённые значения пережили бы сброс и записались обратно.
+    setActivePinia(createPinia())
+    const second = useSettingsStore()
+    expect(second.trajectory.width).toBe(2)
+    expect(second.clothColor).toBe('#0A6C03')
+
+    second.trajectory.width = 42
+    second.$reset()
+    expect(second.trajectory).toEqual({ style: 'dashes', width: 2, density: 1 })
+    expect(second.clothColor).toBe('#0A6C03')
+    expect(DEFAULT_SETTINGS.trajectory.width).toBe(2)
+  })
 })
