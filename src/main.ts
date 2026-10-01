@@ -86,4 +86,8 @@ function onFirstGesture(): void {
 window.addEventListener('pointerdown', onFirstGesture)
 window.addEventListener('keydown', onFirstGesture)
 
+// Контекстное меню (правый клик / long-press) нигде не нужно
+// решением пользователя: все действия — явными кнопками и жестами игры.
+window.addEventListener('contextmenu', (event: Event) => event.preventDefault())
+
 app.mount('#app')

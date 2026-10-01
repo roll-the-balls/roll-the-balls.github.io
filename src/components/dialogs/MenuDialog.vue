@@ -51,17 +51,24 @@ function onFullscreenChange(): void {
 }
 
 // Esc (событие cancel) не должен закрывать меню: за ним пустота, а не игра.
+// Биндинг декларативный (@cancel в шаблоне), а не через addEventListener.
 function blockCancel(event: Event): void {
   event.preventDefault()
 }
 
+// Страховка: если диалог всё же закрылся (Esc в экзотическом браузере,
+// сторонний close) — немедленно переоткрыть, пока вид относится к меню.
+// Рекурсии нет: showModal событие close не порождает; при игровом виде
+// условие ложно и переоткрытия нет.
+function onDialogClose(): void {
+  if (MENU_DIALOG_VIEWS.has(ui.view)) openDialog()
+}
+
 onMounted(() => {
-  dlg.value?.addEventListener('cancel', blockCancel)
   document.addEventListener('fullscreenchange', onFullscreenChange)
   syncDialog()
 })
 onBeforeUnmount(() => {
-  dlg.value?.removeEventListener('cancel', blockCancel)
   document.removeEventListener('fullscreenchange', onFullscreenChange)
 })
 
@@ -72,7 +79,13 @@ watch(
 </script>
 
 <template>
-  <dialog ref="dlg" class="menu-dialog" :aria-label="t('app.title')">
+  <dialog
+    ref="dlg"
+    class="menu-dialog"
+    :aria-label="t('app.title')"
+    @cancel="blockCancel"
+    @close="onDialogClose"
+  >
     <button
       class="dialog-fullscreen"
       type="button"
