@@ -2,7 +2,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
-import { ensureLandscape } from './composables/useFullscreen'
 import { i18n } from './i18n'
 import { useIdentityStore } from './stores/identity'
 import { persistDebounced } from './stores/persist'
@@ -75,15 +74,14 @@ function unlockAudioContext(): void {
   }
 }
 
-// D-15: fullscreen + landscape-lock при старте «при первой возможности» —
-// браузеры разрешают запрос только по пользовательскому жесту, поэтому
-// слушаем первый pointerdown/keydown один раз. Отказ тихий (T-04-02):
-// при недоступном lock путь берёт на себя RotateOverlay.
+// D-15: fullscreen + landscape-lock ТОЛЬКО по явным кнопкам (инфо-бар,
+// диалог меню). Авто-переход по первому жесту убран решением пользователя:
+// полноэкранный режим не должен включаться от любого чиха на странице.
+// Отказ тихий (T-04-02): при недоступном lock путь берёт RotateOverlay.
 function onFirstGesture(): void {
   window.removeEventListener('pointerdown', onFirstGesture)
   window.removeEventListener('keydown', onFirstGesture)
   unlockAudioContext()
-  void ensureLandscape()
 }
 window.addEventListener('pointerdown', onFirstGesture)
 window.addEventListener('keydown', onFirstGesture)

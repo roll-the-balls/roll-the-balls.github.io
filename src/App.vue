@@ -14,7 +14,6 @@ import RulesStub from './components/menu/RulesStub.vue'
 import SettingsScreen from './components/menu/SettingsScreen.vue'
 import ActionBar from './components/shell/ActionBar.vue'
 import MenuDialog from './components/dialogs/MenuDialog.vue'
-import { MENU_DIALOG_VIEWS } from './components/dialogs/menuDialogViews'
 import InfoBar from './components/shell/InfoBar.vue'
 import PlayerPanel from './components/shell/PlayerPanel.vue'
 import TableSlot from './components/shell/TableSlot.vue'
@@ -30,10 +29,6 @@ const identity = useIdentityStore()
 const displayName = computed(() =>
   identity.name.trim() === '' ? t('player.noName') : identity.name,
 )
-
-// Открытый диалог = меню/лобби поверх: игровой слой inert (немодальный
-// <dialog> не даёт inert сам, в отличие от showModal).
-const menuOpen = computed(() => MENU_DIALOG_VIEWS.has(ui.view))
 </script>
 
 <template>
@@ -50,9 +45,9 @@ const menuOpen = computed(() => MENU_DIALOG_VIEWS.has(ui.view))
     />
 
     <!-- Центр: игровой слой. Стол всегда отрендерен; меню живёт
-         в нативном <dialog> поверх всего экрана (UAT Фазы 1).
-         Пока диалог открыт, игровой слой inert (модальность). -->
-    <main class="center" :inert="menuOpen">
+         в showModal-<dialog> поверх всего экрана (UAT Фазы 1).
+         showModal сам делает игровой слой inert (модальность). -->
+    <main class="center">
       <!-- Бокс стола: aspect 2/1, центрирован, виден за блюром диалога. -->
       <TableSlot />
     </main>
