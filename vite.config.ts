@@ -1,10 +1,21 @@
 import { fileURLToPath, URL } from 'node:url'
 
+import { execSync } from 'node:child_process'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import { VitePWA } from 'vite-plugin-pwa'
 import pkg from './package.json'
+
+// Короткий хеш коммита для stamp версии: видно, какой именно билд открыт
+// (диагностика рассинхрона SW-кеша при частых деплоях). Вне git — 'dev'.
+function shortCommit(): string {
+  try {
+    return execSync('git rev-parse --short HEAD').toString().trim() || 'dev'
+  } catch {
+    return 'dev'
+  }
+}
 
 // Конфигурация сборки: сайт организации (<org>.github.io) лежит в корне,
 // поэтому base — '/' (иначе 404 ассетов).
@@ -46,5 +57,6 @@ export default defineConfig({
     // Штамп версии для детекции нового билда в меню (план 01-04).
     __APP_VERSION__: JSON.stringify(pkg.version),
     __BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+    __COMMIT__: JSON.stringify(shortCommit()),
   },
 })

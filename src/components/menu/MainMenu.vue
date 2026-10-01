@@ -11,6 +11,8 @@ const ui = useUiStore()
 // Глобальные константы сборки из define в vite.config.ts (штамп версии, D-16).
 const version = __APP_VERSION__
 const buildDate = __BUILD_DATE__
+// Хеш коммита: диагностика, какой именно билд открыт (рассинхрон SW-кеша).
+const commit = __COMMIT__
 </script>
 
 <template>
@@ -48,7 +50,7 @@ const buildDate = __BUILD_DATE__
     <!-- Слот штампа версии: по умолчанию локализованная подпись v{версия} · {дата}. -->
     <slot name="stamp">
       <span class="version-stamp">
-        {{ t('app.versionLabel', { version, date: buildDate }) }}
+        {{ t('app.versionLabel', { version, date: buildDate }) }} · {{ commit }}
       </span>
     </slot>
   </nav>
