@@ -3,7 +3,9 @@
 
   // Override to include only test files and clear exclusions.
   // Application code imported in tests is automatically included via module resolution.
-  "include": ["src/**/__tests__/*", "env.d.ts"],
+  // Каталог tests/ добавлен планом 01-03: юнит-тесты фазы живут там и должны
+  // проходить строгий type-check (vue-tsc) вместе с исходниками.
+  "include": ["src/**/__tests__/*", "tests/**/*", "env.d.ts"],
   "exclude": [],
 
   "compilerOptions": {
