@@ -1,6 +1,7 @@
 {
   "app": {
-    "title": "Billiards Together"
+    "title": "Billiards Together",
+    "versionLabel": "Version {version}, built {date}"
   },
   "menu": {
     "play": "Play",
@@ -51,6 +52,12 @@
   },
   "table": {
     "title": "Table 2:1 — future render slot"
+  },
+  "reset": {
+    "title": "Reset all data",
+    "body": "This deletes the name, ID, settings and statistics. Continue?",
+    "confirm": "Reset",
+    "cancel": "Cancel"
   },
   "storage": {
     "unavailable": "Settings cannot be saved in this browser. Changes will be lost on reload."
