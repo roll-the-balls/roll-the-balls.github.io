@@ -24,6 +24,8 @@
     "music": "Music",
     "sounds": "Sounds",
     "language": "Language",
+    "langRu": "Русский",
+    "langEn": "English",
     "theme": "Theme",
     "themeDark": "Dark",
     "themeFelt": "Felt"

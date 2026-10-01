@@ -132,9 +132,11 @@ watch(
    липнет влево по fit-content. Позиционирование — UA (absolute + inset). */
 .menu-dialog {
   margin: auto;
+  display: flex;
+  flex-direction: column;
   width: min(560px, calc(100vw - 32px));
   max-height: calc(100dvh - 64px);
-  overflow-y: auto;
+  overflow: hidden;
   background: var(--panel);
   color: var(--text);
   border: 1px solid var(--border);

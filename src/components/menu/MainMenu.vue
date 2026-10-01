@@ -4,6 +4,7 @@
 // без мёртвых кликов. Штамп версии — в слоте stamp (детектор base, D-16).
 import { useI18n } from 'vue-i18n'
 import { useUiStore } from '../../stores/ui'
+import MenuHeader from './MenuHeader.vue'
 
 const { t } = useI18n()
 const ui = useUiStore()
@@ -17,8 +18,9 @@ const commit = __COMMIT__
 
 <template>
   <nav class="menu" :aria-label="t('app.title')">
-    <h1 class="app-title" data-view-title tabindex="-1">{{ t('app.title') }}</h1>
+    <MenuHeader :title="t('app.title')" :show-back="false" level="h1" />
 
+    <div class="menu-scroll">
     <!-- Единственная amber-кнопка приложения: ведёт на выбор режима (D-10). -->
     <button class="cta" type="button" @click="ui.go('mode')">
       <!-- Иконка кия: только inline SVG. -->
@@ -53,5 +55,6 @@ const commit = __COMMIT__
         {{ t('app.versionLabel', { version, date: buildDate }) }} · {{ commit }}
       </span>
     </slot>
+    </div>
   </nav>
 </template>

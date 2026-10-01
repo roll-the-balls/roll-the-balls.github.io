@@ -3,6 +3,7 @@
 // в Фазе 4 — до этого disabled + бейдж «Скоро», без мёртвых кликов.
 import { useI18n } from 'vue-i18n'
 import { useUiStore } from '../../stores/ui'
+import MenuHeader from './MenuHeader.vue'
 
 const { t } = useI18n()
 const ui = useUiStore()
@@ -10,8 +11,9 @@ const ui = useUiStore()
 
 <template>
   <section class="menu" :aria-label="t('mode.title')">
-    <h2 class="heading" data-view-title tabindex="-1">{{ t('mode.title') }}</h2>
+    <MenuHeader :title="t('mode.title')" @back="ui.go('main')" />
 
+    <div class="menu-scroll">
     <button class="menu-btn is-disabled" type="button" disabled>
       <!-- Иконка аркады (молния): inline SVG. -->
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -33,19 +35,6 @@ const ui = useUiStore()
       </svg>
       {{ t('mode.eight') }} <span class="soon">{{ t('menu.soon') }}</span>
     </button>
-
-    <button class="menu-btn" type="button" @click="ui.go('main')">
-      <!-- Иконка «назад»: inline SVG. -->
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-        <path
-          d="M12 4 6 10l6 6"
-          stroke="currentColor"
-          stroke-width="1.6"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-      {{ t('menu.back') }}
-    </button>
+    </div>
   </section>
 </template>
