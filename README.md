@@ -1,54 +1,41 @@
-# bt-scaffold
+# Roll the Balls
 
-This template should help get you started developing with Vue 3 in Vite.
+Веб-приложение «игра в бильярд» строго с видом сверху. Статическая страница без своего сервера:
+открыл страницу, выбрал режим и соперника, ударил и получил честную физику и понятный результат.
 
-## Recommended IDE Setup
+- Сайт: https://roll-the-balls.github.io/
+- Рабочее название репозитория: `billiards-together`
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Три типа соперника: адаптивный компьютер, второй человек локально на одном экране,
+удалённый человек по WebRTC P2P (без своего signaling-сервера, обмен кодами вручную).
+Два стартовых режима: аркада в духе Side Pocket и классическая восьмёрка.
 
-## Recommended Browser Setup
+## Стек
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+Vue 3 + TypeScript + Vite, Pinia (только UI/сессия), vue-i18n (RU/EN), Canvas 2D,
+собственная физика на фиксированном шаге, PWA (офлайн с первого билда).
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
+## Команды
 
 ```sh
-npm install
+npm install        # установка зависимостей
+npm run dev        # dev-сервер с hot-reload
+npm run build      # строгая сборка: vue-tsc type-check + vite build
+npm run preview    # предпросмотр собранного dist/
+npx vitest run     # юнит-тесты (в pwsh: именно так, флаги npm ломают парсинг)
+npm run lint       # oxlint + eslint
 ```
 
-### Compile and Hot-Reload for Development
+Требуется Node 22+ (см. `engines` в package.json).
 
-```sh
-npm run dev
-```
+## Структура
 
-### Type-Check, Compile and Minify for Production
+- `src/stores/` — Pinia-сторы UI/сессии (settings, identity, ui)
+- `src/i18n/` — словари RU/EN
+- `src/components/` — menu, shell, dialogs, overlays
+- `src/composables/`, `src/styles/` — ориентация/fullscreen, токены/темы
+- `src/core|modes|game|render|input|net/` — заготовки слоёв будущих фаз
+- `tests/` — юнит-тесты сторов, i18n-паритета, навигации
 
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+Деплой: GitHub Actions собирает `dist/` и публикует на GitHub Pages
+(`.github/workflows/deploy.yml`, Source: GitHub Actions).
