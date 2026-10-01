@@ -1,0 +1,26 @@
+/* Темы (MENU-03, UI-SPEC Color): ровно две, переключаются атрибутом
+   data-theme на <html> и применяются немедленно (main.ts следит за стором).
+   Реализованы чисто как переопределения CSS-переменных из tokens.css.
+   Токен --panel объявлен здесь, на html, а не в .shell: felt-тема должна
+   менять панели во всех компонентах (паттерн установлен в плане 01-03). */
+
+/* dark (дефолт): плоский фон #0E1113, панели #1B2126. */
+html,
+html[data-theme='dark'] {
+  --panel: #1b2126;
+  --bg-image: none;
+}
+
+/* felt: тёмно-зелёный градиент #0C1A14 → #0E1113, панели #16211C. */
+html[data-theme='felt'] {
+  --panel: #16211c;
+  --bg-image: linear-gradient(180deg, #0c1a14 0%, #0e1113 100%);
+}
+
+/* Фон и цвет текста страницы принадлежат теме: переопределяют
+   scaffold-значения base.css (импорт main.css) за счёт порядка подключения. */
+body {
+  background-color: var(--bg);
+  background-image: var(--bg-image);
+  color: var(--text);
+}

@@ -1,11 +1,10 @@
 @import './base.css';
 
 /* Глобалка shell: полноэкранная сцена без центрирования скаффолда —
-   раскладкой владеет grid в App.vue (D-13). Шрифт — system stack
-   из UI-SPEC: покрывает RU/EN без веб-шрифтов, работает офлайн. */
-html[data-theme='felt'] body {
-  background: linear-gradient(180deg, #0c1a14 0%, #0e1113 100%);
-}
+   раскладкой владеет grid в styles/shell.css (D-13). Шрифт — system stack
+   из UI-SPEC: покрывает RU/EN без веб-шрифтов, работает офлайн.
+   Фон/цвет body и токены тем — в styles/themes.css (подключается позже
+   и переопределяет scaffold-значения base.css). */
 
 body {
   margin: 0;
@@ -16,8 +15,6 @@ body {
     Roboto,
     'Noto Sans',
     sans-serif;
-  background: #0e1113;
-  color: #f2f4f5;
   overscroll-behavior: none;
 }
 
@@ -28,20 +25,10 @@ body {
   padding: 0;
 }
 
-/* Темы (MENU-03, UI-SPEC Color): dark — плоский #0E1113, felt — зелёный
-   градиент и панели #16211C. Токен --panel переопределяется темой на html,
-   .shell его только наследует. */
-html {
-  --panel: #1b2126;
-}
-
-html[data-theme='felt'] {
-  --panel: #16211c;
-}
-
 /* Общие примитивы меню (план 01-03): scoped-стили App.vue не проникают
    внутрь дочерних компонентов, поэтому классы экранов меню/настроек живут
-   в глобальном CSS. Токены --* наследуются от .shell (App.vue).
+   в глобальном CSS. Токены --* объявлены на :root (styles/tokens.css)
+   и переопределяются темами (styles/themes.css).
    Палитра и 4 текстовых размера — строго из UI-SPEC; тач-цели ≥44px. */
 .menu {
   display: flex;

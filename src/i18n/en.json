@@ -48,7 +48,9 @@
     "statusReady": "Ready"
   },
   "actions": {
-    "hit": "Shoot"
+    "hit": "Shoot",
+    "power": "Power",
+    "finesse": "Finesse"
   },
   "table": {
     "title": "Table 2:1 — future render slot"

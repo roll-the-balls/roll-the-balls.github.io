@@ -8,6 +8,13 @@ import { persistDebounced } from './stores/persist'
 import { SETTINGS_KEY, useSettingsStore } from './stores/settings'
 import { IDENTITY_KEY } from './stores/identity'
 
+// Глобальные стили: порядок важен — themes.css переопределяет фон body
+// из scaffold base.css (внутри main.css), shell.css задаёт grid-раскладку.
+import './assets/main.css'
+import './styles/tokens.css'
+import './styles/themes.css'
+import './styles/shell.css'
+
 const app = createApp(App)
 app.use(createPinia())
 app.use(i18n)

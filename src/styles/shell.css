@@ -1,0 +1,48 @@
+/* Shell-раскладка (D-13, D-16, Layout Contract UI-SPEC).
+   Широкий экран (≥1024px): 3 колонки 240px | 1fr | 240px,
+   ряды auto | 1fr | 64px (инфо-бар / центр / панель действий).
+   Все регионы — собственные grid-треки; UI никогда не перекрывает стол. */
+.shell {
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: 240px 1fr 240px;
+  grid-template-rows: auto 1fr 64px;
+  grid-template-areas:
+    'info info info'
+    'left center right'
+    'actions actions actions';
+  /* Тема владеет фоном: flat dark или градиент felt (themes.css). */
+  background-color: var(--bg);
+  background-image: var(--bg-image);
+  color: var(--text);
+  font-size: var(--text-body);
+}
+
+/* Центр: инфо-контент экранов меню сверху, бокс стола занимает остаток.
+   Стол и бары не сжимаются; меню скроллится внутри (overflow-probe E1/E3). */
+.center {
+  grid-area: center;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: var(--space-md);
+  gap: var(--space-md);
+  overflow: hidden;
+}
+
+/* Узкий ландшафт 700–1023px: одна левая панель 200px,
+   правая схлопнута в меню (D-16, backstop UI-SPEC E4). */
+@media (min-width: 700px) and (max-width: 1023px) {
+  .shell {
+    grid-template-columns: 200px 1fr;
+    grid-template-areas:
+      'info info'
+      'left center'
+      'actions actions';
+  }
+
+  .panel-right {
+    display: none;
+  }
+}

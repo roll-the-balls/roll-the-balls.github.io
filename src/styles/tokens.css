@@ -1,0 +1,37 @@
+/* Дизайн-токены UI-SPEC: палитра, типографика (4 размера / 2 веса),
+   спейсинг-скейл 4–64, минимальная тач-цель 44px. Объявлены на :root —
+   наследуются всеми компонентами; темы переопределяют их в themes.css. */
+:root {
+  /* Палитра (UI-SPEC Color): доминант/панели/акцент/деструктив. */
+  --bg: #0e1113;
+  --panel: #1b2126;
+  --accent: #e8b34b;
+  --danger: #e5484d;
+
+  /* Текст: основной и вторичный; бордеры и разделители. */
+  --text: #f2f4f5;
+  --text-dim: #a7b0b7;
+  --border: rgba(255, 255, 255, 0.08);
+
+  /* Ровно 4 текстовых размера (Body/Label/Heading/Display). */
+  --text-body: 16px;
+  --text-label: 14px;
+  --text-heading: 20px;
+  --text-display: 28px;
+
+  /* Ровно 2 веса: 400 (body/label) и 600 (heading/display). */
+  --weight-regular: 400;
+  --weight-semibold: 600;
+
+  /* Спейсинг-скейл (кратно 4): xs→3xl. */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Минимальная тач-цель для всех интерактивных элементов. */
+  --touch-min: 44px;
+}
