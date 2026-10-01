@@ -6,12 +6,12 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import { VitePWA } from 'vite-plugin-pwa'
 import pkg from './package.json'
 
-// Конфигурация сборки: project-site на GitHub Pages лежит в подпапке,
-// поэтому base зафиксирован с первого коммита (иначе 404 ассетов).
+// Конфигурация сборки: сайт организации (<org>.github.io) лежит в корне,
+// поэтому base — '/' (иначе 404 ассетов).
 // https://vite.dev/config/
 export default defineConfig({
-  // Базовый путь project-site; для кастомного домена или user-site сменить на '/'.
-  base: '/billiards-together/',
+  // Корневой base для org/user-site; для project-подпапки вернуть '/<repo>/'.
+  base: '/',
   plugins: [
     vue(),
     vueDevTools(),
