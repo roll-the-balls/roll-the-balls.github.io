@@ -10,7 +10,7 @@ const ui = useUiStore()
 
 <template>
   <section class="menu" :aria-label="t('rules.title')">
-    <h2 class="heading">{{ t('rules.title') }}</h2>
+    <h2 class="heading" data-view-title tabindex="-1">{{ t('rules.title') }}</h2>
     <p class="body-text">{{ t('rules.stub') }}</p>
     <button class="menu-btn" type="button" @click="ui.go('main')">
       <!-- Иконка «назад»: inline SVG. -->

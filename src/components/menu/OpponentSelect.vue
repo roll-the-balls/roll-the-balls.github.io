@@ -10,7 +10,7 @@ const ui = useUiStore()
 
 <template>
   <section class="menu" :aria-label="t('opponent.title')">
-    <h2 class="heading">{{ t('opponent.title') }}</h2>
+    <h2 class="heading" data-view-title tabindex="-1">{{ t('opponent.title') }}</h2>
 
     <button class="menu-btn is-disabled" type="button" disabled>
       <!-- Иконка компьютера (чип): inline SVG. -->

@@ -34,7 +34,7 @@ function setTheme(next: 'dark' | 'felt'): void {
 
 <template>
   <section class="menu" :aria-label="t('settings.title')">
-    <h2 class="heading">{{ t('settings.title') }}</h2>
+    <h2 class="heading" data-view-title tabindex="-1">{{ t('settings.title') }}</h2>
 
     <!-- Ряд 1: имя (maxlength 24, однострочный ellipsis) + короткий ID. -->
     <label class="settings-row">

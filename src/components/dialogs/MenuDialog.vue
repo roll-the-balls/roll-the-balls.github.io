@@ -12,7 +12,7 @@
 // порядок вставки, поэтому на каждое изменение fullscreen диалог
 // закрывается и открывается заново, вставая выше (порядок восстанавливается
 // и при выходе). Проверено пользователем через консоль до автоматизации.
-import { onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { toggleFullscreen } from '../../composables/useFullscreen'
 import { useUiStore } from '../../stores/ui'
@@ -41,6 +41,15 @@ function syncDialog(): void {
   else dlg.value?.close() // close на закрытом — тихий no-op.
 }
 
+// Перевод фокуса на заголовок текущего экрана: при навигации сфокусированный
+// элемент размонтируется (v-if по view) и фокус падает в body — Tab/Space
+// после этого ведут себя непредсказуемо. Программный фокус кольца не даёт.
+async function focusTitle(): Promise<void> {
+  await nextTick()
+  const title = dlg.value?.querySelector<HTMLElement>('[data-view-title]')
+  title?.focus({ preventScroll: true })
+}
+
 // Переоткрытие при входе/выходе из fullscreen: ставит диалог в top-layer
 // выше fullscreen-корня. Без жеста пользователя работает (showModal,
 // в отличие от requestFullscreen, transient activation не требует).
@@ -67,6 +76,7 @@ function onDialogClose(): void {
 onMounted(() => {
   document.addEventListener('fullscreenchange', onFullscreenChange)
   syncDialog()
+  void focusTitle()
 })
 onBeforeUnmount(() => {
   document.removeEventListener('fullscreenchange', onFullscreenChange)
@@ -74,7 +84,10 @@ onBeforeUnmount(() => {
 
 watch(
   () => ui.view,
-  () => syncDialog(),
+  () => {
+    syncDialog()
+    void focusTitle()
+  },
 )
 </script>
 

@@ -17,7 +17,7 @@ const commit = __COMMIT__
 
 <template>
   <nav class="menu" :aria-label="t('app.title')">
-    <h1 class="app-title">{{ t('app.title') }}</h1>
+    <h1 class="app-title" data-view-title tabindex="-1">{{ t('app.title') }}</h1>
 
     <!-- Единственная amber-кнопка приложения: ведёт на выбор режима (D-10). -->
     <button class="cta" type="button" @click="ui.go('mode')">
