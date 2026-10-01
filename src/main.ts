@@ -2,6 +2,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
+import { ensureLandscape } from './composables/useFullscreen'
 import { i18n } from './i18n'
 import { useIdentityStore } from './stores/identity'
 import { persistDebounced } from './stores/persist'
@@ -26,12 +27,15 @@ const identity = useIdentityStore()
 settings.hydrate()
 identity.hydrate()
 
-// Применяет настройки к окружению: тема через data-theme, локаль в i18n.
+// Применяет настройки к окружению: тема через data-theme, локаль в i18n,
+// lang и title документа — за локалью (index.html задаёт только стартовые).
 function applyPreferences(): void {
   document.documentElement.dataset['theme'] = settings.theme
   const target = settings.locale
   // vue-i18n v11 Composition: locale — записываемая ссылка.
   if (i18n.global.locale.value !== target) i18n.global.locale.value = target
+  document.documentElement.lang = target
+  document.title = i18n.global.t('app.title')
 }
 applyPreferences()
 
@@ -49,4 +53,39 @@ export const pendingInvite: string | null = (() => {
     return null
   }
 })()
+
+// Autoplay-policy (UI-SPEC Interaction): AudioContext создаётся лениво
+// и разблокируется по первому пользовательскому жесту. Один контекст
+// на приложение; без Web Audio — тихий пропуск (feature-detect).
+let audioCtx: AudioContext | null = null
+
+function unlockAudioContext(): void {
+  try {
+    if (audioCtx === null) {
+      const Ctor =
+        window.AudioContext ??
+        (window as unknown as { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext
+      if (typeof Ctor !== 'function') return
+      audioCtx = new Ctor()
+    }
+    if (audioCtx.state === 'suspended') void audioCtx.resume().catch(() => {})
+  } catch {
+    // Web Audio недоступен: приложение работает без звука, boot не падает.
+  }
+}
+
+// D-15: fullscreen + landscape-lock при старте «при первой возможности» —
+// браузеры разрешают запрос только по пользовательскому жесту, поэтому
+// слушаем первый pointerdown/keydown один раз. Отказ тихий (T-04-02):
+// при недоступном lock путь берёт на себя RotateOverlay.
+function onFirstGesture(): void {
+  window.removeEventListener('pointerdown', onFirstGesture)
+  window.removeEventListener('keydown', onFirstGesture)
+  unlockAudioContext()
+  void ensureLandscape()
+}
+window.addEventListener('pointerdown', onFirstGesture)
+window.addEventListener('keydown', onFirstGesture)
+
 app.mount('#app')

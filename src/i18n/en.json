@@ -45,7 +45,8 @@
   },
   "info": {
     "menu": "Main menu",
-    "statusReady": "Ready"
+    "statusReady": "Ready",
+    "fullscreen": "Fullscreen"
   },
   "actions": {
     "hit": "Shoot",

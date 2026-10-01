@@ -1,20 +1,17 @@
 <script setup lang="ts">
 // Инфо-бар (D-15): всегда видим, даже в меню; первая строка shell-grid.
 // Слоты статусов (фол/ход/бонусы) — каркас под Фазу 3+; кнопка
-// полноэкранного режима вызывается только пользовательским жестом.
+// полноэкранного режима — пользовательский жест, поэтому здесь
+// допустим полный путь ensureLandscape: fullscreen + lock (Pattern 5).
 import { useI18n } from 'vue-i18n'
+import { toggleFullscreen } from '../../composables/useFullscreen'
 
 const { t } = useI18n()
 
-// Базовый toggle полноэкранного режима; полный путь lock('landscape')
-// с фолбэком в overlay подключается в задаче 2 (Pattern 5).
-async function toggleFullscreen(): Promise<void> {
-  try {
-    if (document.fullscreenElement) await document.exitFullscreen()
-    else await document.documentElement.requestFullscreen()
-  } catch {
-    // Отказ пользователя/платформы: остаёмся в окне, тихо игнорируем.
-  }
+// Клик по кнопке: выход из полноэкранного или вход + landscape-lock;
+// отказ платформы тихо игнорируется (try/catch внутри toggleFullscreen).
+function onFullscreenClick(): void {
+  void toggleFullscreen()
 }
 </script>
 
@@ -29,9 +26,9 @@ async function toggleFullscreen(): Promise<void> {
     <button
       class="icon-btn"
       type="button"
-      :aria-label="t('settings.title')"
-      :title="t('settings.title')"
-      @click="toggleFullscreen"
+      :aria-label="t('info.fullscreen')"
+      :title="t('info.fullscreen')"
+      @click="onFullscreenClick"
     >
       <!-- Иконка развёртки: только inline SVG, без внешних ассетов. -->
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">

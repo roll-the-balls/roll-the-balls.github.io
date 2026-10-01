@@ -16,6 +16,7 @@ import ActionBar from './components/shell/ActionBar.vue'
 import InfoBar from './components/shell/InfoBar.vue'
 import PlayerPanel from './components/shell/PlayerPanel.vue'
 import TableSlot from './components/shell/TableSlot.vue'
+import RotateOverlay from './components/overlays/RotateOverlay.vue'
 import StorageBanner from './components/overlays/StorageBanner.vue'
 import { useIdentityStore } from './stores/identity'
 import { useUiStore } from './stores/ui'
@@ -64,41 +65,7 @@ const displayName = computed(() =>
     <!-- Панель действий 64px: слоты-заглушки под Фазу 3. -->
     <ActionBar />
 
-    <!-- Портретный overlay: чистая CSS-дисциплина (задача 2 заменит
-         на компонент RotateOverlay с автозакрытием при повороте). -->
-    <div class="rotate-overlay" role="alert">
-      <h2 class="rotate-title">{{ t('rotate.title') }}</h2>
-      <p class="body-text">{{ t('rotate.body') }}</p>
-    </div>
+    <!-- Портретный overlay: реактивный детект + автозакрытие при повороте (D-15). -->
+    <RotateOverlay />
   </div>
 </template>
-
-<style scoped>
-/* Портрет: полноэкранный overlay поверх всего — только альбомный режим. */
-.rotate-overlay {
-  display: none;
-}
-
-@media (orientation: portrait) {
-  .rotate-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-md);
-    background: var(--bg);
-    padding: var(--space-xl);
-    text-align: center;
-  }
-
-  .rotate-title {
-    font-size: var(--text-display);
-    font-weight: var(--weight-semibold);
-    line-height: 1.2;
-    margin: 0;
-  }
-}
-</style>

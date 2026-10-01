@@ -45,7 +45,8 @@
   },
   "info": {
     "menu": "Главное меню",
-    "statusReady": "Готов"
+    "statusReady": "Готов",
+    "fullscreen": "Полноэкранный режим"
   },
   "actions": {
     "hit": "Удар",

@@ -25,6 +25,12 @@ export default defineConfig({
         orientation: 'landscape',
         theme_color: '#0E1113',
         background_color: '#0E1113',
+        // Иконки-заглушки 192/512 из public/ (A4: достаточны для офлайна v1;
+        // install-prompt не требуется). base подставляется плагином.
+        icons: [
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
+        ],
       },
       workbox: { globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'] },
     }),
