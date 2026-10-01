@@ -41,12 +41,10 @@ textarea,
   font-size: var(--text-body);
 }
 
-/* Центр: бокс стола занимает всё место; меню живёт в модальном диалоге
-   поверх стола (MenuDialog, решение пользователя из UAT Фазы 1).
-   position: relative — якорь для absolute-backdrop диалога. */
+/* Центр: бокс стола занимает всё место; меню живёт в нативном <dialog>
+   поверх всего экрана (MenuDialog, решение пользователя из UAT Фазы 1). */
 .center {
   grid-area: center;
-  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;

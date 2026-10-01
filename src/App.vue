@@ -18,7 +18,6 @@ import InfoBar from './components/shell/InfoBar.vue'
 import PlayerPanel from './components/shell/PlayerPanel.vue'
 import TableSlot from './components/shell/TableSlot.vue'
 import RotateOverlay from './components/overlays/RotateOverlay.vue'
-import StorageBanner from './components/overlays/StorageBanner.vue'
 import { useIdentityStore } from './stores/identity'
 import { useUiStore } from './stores/ui'
 
@@ -45,12 +44,9 @@ const displayName = computed(() =>
       :tag="t('player.you')"
     />
 
-    <!-- Центр: стол всегда за диалогом; меню (и будущие лобби) живут
-         в модальном диалоге поверх стола (решение пользователя, UAT Фазы 1). -->
+    <!-- Центр: игровой слой. Стол всегда отрендерен; меню живёт
+         в нативном <dialog> поверх (решение пользователя, UAT Фазы 1). -->
     <main class="center">
-      <!-- Инлайн-баннер недоступности localStorage: только при флаге (D-08). -->
-      <StorageBanner />
-
       <!-- Бокс стола: aspect 2/1, центрирован, виден за блюром диалога. -->
       <TableSlot />
 
@@ -69,7 +65,8 @@ const displayName = computed(() =>
     <!-- Панель действий 64px: слоты-заглушки под Фазу 3. -->
     <ActionBar />
 
-    <!-- Портретный overlay: реактивный детект + автозакрытие при повороте (D-15). -->
+    <!-- Портретный overlay игрового слоя: при открытом меню поверх него
+         встаёт экземпляр внутри MenuDialog (top-layer), этот — для игры. -->
     <RotateOverlay />
   </div>
 </template>
